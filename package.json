@@ -12,6 +12,6 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.1",
-    "pg-promise": "^11.10.2"
+    "pg": "^8.13.1"
   }
 }
