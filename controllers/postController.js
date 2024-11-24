@@ -1,28 +1,5 @@
 import pool from "../db.js";
 
-let posts = [
-    {
-        id: 1,
-        title: "Some title",
-        content: "Some content",
-        author: "Jim Dobbins", // user id goes here
-        likes: 32,
-    },
-    {
-        id: 2,
-        title: "Some title",
-        content: "Some content",
-        author: "Jim Dobbins", // user id goes here
-        likes: 32,
-    },
-    {
-        id: 3,
-        title: "Some title",
-        content: "Some content",
-        author: "Jim Dobbins", // user id goes here
-        likes: 32,
-    },
-]
 // @desc    Get many posts.
 export const getPosts = async (req, res) => {
     try {
@@ -52,7 +29,6 @@ export const getPost = (req, res, next) => {
 // @desc    Create a post.
 export const createPost = async (req, res) => {
     const newPost = {
-        id: posts.length + 1,
         title: "Some title",
         content: "Some content",
         author: "Jim Dobbins",
@@ -70,13 +46,11 @@ export const createPost = async (req, res) => {
             'INSERT INTO posts (title, content, author, likes) VALUES ($1, $2, $3, $4)',
             [newPost.title, newPost.content, newPost.author, newPost.likes]
         )
-        res.status(201).json({msg: "Successfully created post"});
+        return res.status(201).json({msg: "Successfully created post"});
     } catch(err) {
         console.log(err);
         return res.status(400).json({msg: err.message});
     }
-
-    return res.status(201).json(posts);
 }
 // @desc    Update a post.
 export const updatePost = (req, res, next) => {

@@ -16,9 +16,7 @@ app.get('/', (req, res) => {
 
 app.get('/setup', async (req, res) => {
     try {
-        await pool.query(
-            'CREATE TABLE posts( id SERIAL PRIMARY KEY, title VARCHAR(100), content LONGTEXT, likes INT(10), author VARCHAR(100) )'
-        )
+        await pool.query('CREATE TABLE posts( id SERIAL PRIMARY KEY, title VARCHAR(100), content TEXT, likes INT, author VARCHAR(100))')
         res.status(200).json({msg: "Successfully created TABLE posts"});
     } catch(err) {
         console.log(err)
