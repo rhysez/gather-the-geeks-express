@@ -1,3 +1,5 @@
+import pool from '../db.js'
+
 let posts = [
     {
         id: 1,
@@ -22,14 +24,20 @@ let posts = [
     },
 ]
 // @desc    Get many posts.
-export const getPosts = (req, res) => {
-    const limit = req.query.limit || 30;
+export const getPosts = async (req, res) => {
+    try {
+        const data = await pool.query('SELECT * FROM posts')
 
-    if (!isNaN(limit) && limit > 0) {
-        return res.status(200).json(posts.slice(0, limit));
+        const limit = req.query.limit || 30;
+        if (!isNaN(limit) && limit > 0) {
+            return res.status(200).json(data.rows.slice(0, limit));
+        }
+
+        return res.status(200).json(data.rows);
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({msg: "Internal Server Error"})
     }
-
-    return res.status(200).json(posts);
 }
 // @desc    Get one post.
 export const getPost = (req, res, next) => {
@@ -43,22 +51,33 @@ export const getPost = (req, res, next) => {
     return res.status(200).json(post);
 }
 // @desc    Create a post.
-export const createPost = (req, res) => {
+export const createPost = async (req, res) => {
     const newPost = {
-        id: posts.length + 1,
         title: "Some title",
         content: "Some content",
         author: "Jim Dobbins",
         likes: 32,
     }
 
-    if (!newPost.title || !newPost.content) {
+    const {title, content, likes, author} = req.body
+
+    if (!title || !content) {
         const error = new Error(`The post must contain a title and content.`);
         error.status = 400;
         return next(error)
     }
 
-    posts.push(newPost);
+    try {
+        await pool.query(
+            'INSERT INTO posts (title, content, likes, author) VALUES ($title, $content, $likes, $author)',
+            [title, content, likes, author],
+        )
+        res.status(201).json({msg: "Successfully created post"});
+    } catch(err) {
+        console.log(err);
+        return res.status(400).json({msg: err.message});
+    }
+
     return res.status(201).json(posts);
 }
 // @desc    Update a post.

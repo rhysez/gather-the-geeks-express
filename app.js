@@ -1,4 +1,5 @@
 import express from 'express';
+import pool from './db.js'
 import posts from './routes/posts.js';
 import errorHandler from './middleware/error.js';
 import notFoundHandler from './middleware/notFound.js';
@@ -20,4 +21,16 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 
 app.get("/", (req, res) => {
     res.json({msg: "Gather The Geeks server is up"})
+})
+
+app.get("/setup", async (req, res) => {
+    try {
+        await pool.query(
+            'CREATE TABLE posts( id SERIAL PRIMARY KEY, title VARCHAR(100), content LONGTEXT, likes INT(10), author VARCHAR(100) ))'
+        )
+        res.status(201).json({msg: "Successfully created TABLE"});
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({msg: "Internal Server Error"})
+    }
 })
