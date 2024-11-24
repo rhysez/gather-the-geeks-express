@@ -2,6 +2,7 @@ import express from 'express';
 import posts from './routes/posts.js';
 import errorHandler from './middleware/error.js';
 import notFoundHandler from './middleware/notFound.js';
+import pool from "./db.js";
 
 // express initialisation with port.
 const app = express();
@@ -9,8 +10,20 @@ const port = process.env.PORT || 8000;
 
 // route imports.
 app.use('/api/posts', posts);
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
     res.status(200).json({msg: "Server up"})
+})
+
+app.get('/setup', async (req, res) => {
+    try {
+        await pool.query(
+            'CREATE TABLE posts( id SERIAL PRIMARY KEY, title VARCHAR(100), content LONGTEXT, likes INT(10), author VARCHAR(100) )'
+        )
+        res.status(200).json({msg: "Successfully created TABLE posts"});
+    } catch(err) {
+        console.log(err)
+        res.status(500).json({msg: err.message});
+    }
 })
 
 // middleware.

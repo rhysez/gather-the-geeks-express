@@ -1,3 +1,5 @@
+import pool from "../db.js";
+
 let posts = [
     {
         id: 1,
@@ -24,12 +26,13 @@ let posts = [
 // @desc    Get many posts.
 export const getPosts = async (req, res) => {
     try {
+        const data = await pool.query('SELECT * FROM posts')
         const limit = req.query.limit || 30;
         if (!isNaN(limit) && limit > 0) {
-            return res.status(200).json(posts.slice(0, limit));
+            return res.status(200).json(data.rows.slice(0, limit));
         }
 
-        return res.status(200).json(posts);
+        return res.status(200).json(data.rows);
     } catch (err) {
         console.log(err)
         res.status(500).json({msg: "Internal Server Error"})
@@ -63,7 +66,10 @@ export const createPost = async (req, res) => {
     }
 
     try {
-        posts.push(newPost)
+        await pool.query(
+            'INSERT INTO posts (title, content, author, likes) VALUES ($1, $2, $3, $4)',
+            [newPost.title, newPost.content, newPost.author, newPost.likes]
+        )
         res.status(201).json({msg: "Successfully created post"});
     } catch(err) {
         console.log(err);
