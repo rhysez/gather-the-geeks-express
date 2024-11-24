@@ -8,6 +8,10 @@ const port = process.env.PORT || 8000;
 // route imports.
 app.use('/api/blog_posts', blogPosts);
 
+// middleware.
+app.use(express.json()) // allows parsing of incoming json in request body
+app.use(express.urlencoded({ extended: false }))
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 app.get("/", (req, res) => {
