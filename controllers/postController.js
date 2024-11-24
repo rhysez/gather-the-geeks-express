@@ -1,5 +1,3 @@
-import pool from '../db.js'
-
 let posts = [
     {
         id: 1,
@@ -26,14 +24,12 @@ let posts = [
 // @desc    Get many posts.
 export const getPosts = async (req, res) => {
     try {
-        const data = await pool.query('SELECT * FROM posts')
-
         const limit = req.query.limit || 30;
         if (!isNaN(limit) && limit > 0) {
-            return res.status(200).json(data.rows.slice(0, limit));
+            return res.status(200).json(posts.slice(0, limit));
         }
 
-        return res.status(200).json(data.rows);
+        return res.status(200).json(posts);
     } catch (err) {
         console.log(err)
         res.status(500).json({msg: "Internal Server Error"})
@@ -53,25 +49,21 @@ export const getPost = (req, res, next) => {
 // @desc    Create a post.
 export const createPost = async (req, res) => {
     const newPost = {
+        id: posts.length + 1,
         title: "Some title",
         content: "Some content",
         author: "Jim Dobbins",
         likes: 32,
     }
 
-    const {title, content, likes, author} = req.body
-
-    if (!title || !content) {
+    if (!newPost.title || !newPost.content) {
         const error = new Error(`The post must contain a title and content.`);
         error.status = 400;
         return next(error)
     }
 
     try {
-        await pool.query(
-            'INSERT INTO posts (title, content, likes, author) VALUES ($title, $content, $likes, $author)',
-            [title, content, likes, author],
-        )
+        posts.push(newPost)
         res.status(201).json({msg: "Successfully created post"});
     } catch(err) {
         console.log(err);
