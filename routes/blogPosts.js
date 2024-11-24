@@ -1,4 +1,5 @@
 import express from 'express';
+
 const router = express.Router();
 
 let posts = [
@@ -37,11 +38,13 @@ router.get('/', (req, res) => {
 })
 
 // @desc    Get one post.
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
     const id = parseInt(req.params.id);
     const post = posts.find(post => post.id === id);
     if (!post) {
-        return res.status(404).json({msg: `A post with id ${id} was not found`});
+        const error = new Error(`The post with id ${id} was not found`);
+        error.status = 404;
+        return next(error)
     }
     return res.status(200).json(post);
 })
@@ -57,7 +60,9 @@ router.post('/', (req, res) => {
     }
 
     if (!newPost.title || !newPost.content) {
-        return res.status(400).json({msg: "Please include a title and content"})
+        const error = new Error(`The post must contain a title and content.`);
+        error.status = 400;
+        return next(error)
     }
 
     posts.push(newPost);
@@ -65,11 +70,13 @@ router.post('/', (req, res) => {
 })
 
 // @desc    Update a post.
-router.put('/:id', (req, res) => {
+router.put('/:id', (req, res, next) => {
     const id = parseInt(req.params.id);
     const post = posts.find(post => post.id === id);
     if (!post) {
-        return res.status(404).json({msg: `A post with id ${id} was not found`})
+        const error = new Error(`The post with id ${id} was not found`);
+        error.status = 404;
+        return next(error)
     }
 
     post.title = req.body.title;
@@ -79,11 +86,13 @@ router.put('/:id', (req, res) => {
 })
 
 // @desc    Delete a post.
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res, next) => {
     const id = parseInt(req.params.id);
     const post = posts.find(post => post.id === id);
     if (!post) {
-        return res.status(404).json({msg: `A post with id ${id} was not found`})
+        const error = new Error(`The post with id ${id} was not found`);
+        error.status = 404;
+        return next(error)
     }
 
     posts = posts.filter(post => post.id !== id);
