@@ -1,5 +1,5 @@
 import express from 'express';
-import blogPosts from './routes/blogPosts.js';
+import posts from './routes/posts.js';
 import errorHandler from './middleware/error.js';
 import notFoundHandler from './middleware/notFound.js';
 
@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // route imports.
-app.use('/api/posts', blogPosts);
+app.use('/api/posts', posts);
 
 // middleware.
 app.use(express.json())

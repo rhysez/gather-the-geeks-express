@@ -1,7 +1,3 @@
-import express from 'express';
-
-const router = express.Router();
-
 let posts = [
     {
         id: 1,
@@ -25,9 +21,8 @@ let posts = [
         likes: 32,
     },
 ]
-
 // @desc    Get many posts.
-router.get('/', (req, res) => {
+export const getPosts = (req, res) => {
     const limit = req.query.limit || 30;
 
     if (!isNaN(limit) && limit > 0) {
@@ -35,10 +30,9 @@ router.get('/', (req, res) => {
     }
 
     return res.status(200).json(posts);
-})
-
+}
 // @desc    Get one post.
-router.get('/:id', (req, res, next) => {
+export const getPost = (req, res, next) => {
     const id = parseInt(req.params.id);
     const post = posts.find(post => post.id === id);
     if (!post) {
@@ -47,10 +41,9 @@ router.get('/:id', (req, res, next) => {
         return next(error)
     }
     return res.status(200).json(post);
-})
-
+}
 // @desc    Create a post.
-router.post('/', (req, res) => {
+export const createPost = (req, res) => {
     const newPost = {
         id: posts.length + 1,
         title: "Some title",
@@ -67,10 +60,9 @@ router.post('/', (req, res) => {
 
     posts.push(newPost);
     return res.status(201).json(posts);
-})
-
+}
 // @desc    Update a post.
-router.put('/:id', (req, res, next) => {
+export const updatePost = (req, res, next) => {
     const id = parseInt(req.params.id);
     const post = posts.find(post => post.id === id);
     if (!post) {
@@ -83,10 +75,9 @@ router.put('/:id', (req, res, next) => {
     post.content = req.body.content;
     post.likes = req.body.likes;
     return res.status(200).json(posts);
-})
-
+}
 // @desc    Delete a post.
-router.delete('/:id', (req, res, next) => {
+export const deletePost = (req, res, next) => {
     const id = parseInt(req.params.id);
     const post = posts.find(post => post.id === id);
     if (!post) {
@@ -97,6 +88,4 @@ router.delete('/:id', (req, res, next) => {
 
     posts = posts.filter(post => post.id !== id);
     return res.status(200).json(posts);
-})
-
-export default router;
+}
