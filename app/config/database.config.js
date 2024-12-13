@@ -1,9 +1,13 @@
-module.exports = {
+import 'dotenv/config'
+
+const {POSTGRES_HOST, POSTGRES_USER, POSTGRES_PASSWORD} = process.env;
+
+const config = {
   development: {
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
+    username: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
     database: "gtg_development",
-    host: process.env.POSTGRES_HOST,
+    host: POSTGRES_HOST,
     dialect: "postgres"
   },
   // test: {
@@ -21,3 +25,5 @@ module.exports = {
   //   dialect: "postgres"
   // }
 }
+
+export default config;

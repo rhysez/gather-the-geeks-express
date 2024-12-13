@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 })
 
 // TODO: Use a script for this.
-app.get('/setup', async (req, res) => {
+app.get('/seed', async (req, res) => {
     try {
         await pool.query('CREATE TABLE posts( id SERIAL PRIMARY KEY, title VARCHAR(100), content TEXT, likes INT, author VARCHAR(100))')
         res.status(200).json({msg: "Successfully created TABLE posts"});
