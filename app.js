@@ -6,15 +6,16 @@ import pool from "./database/db.js";
 
 // express initialisation with port.
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 
 // route imports.
-app.use(express.json())
 app.use('/api/posts', posts);
+
 app.get('/', (req, res) => {
     res.status(200).json({msg: "Server up"})
 })
 
+// TODO: Use a script for this.
 app.get('/setup', async (req, res) => {
     try {
         await pool.query('CREATE TABLE posts( id SERIAL PRIMARY KEY, title VARCHAR(100), content TEXT, likes INT, author VARCHAR(100))')
@@ -26,6 +27,7 @@ app.get('/setup', async (req, res) => {
 })
 
 // middleware.
+app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(notFoundHandler);
 app.use(errorHandler);

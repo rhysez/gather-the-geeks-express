@@ -16,9 +16,10 @@ export const getPosts = async (req, res) => {
     }
 }
 // @desc    Get one post.
-export const getPost = (req, res, next) => {
+export const getPost = async (req, res, next) => {
     const id = parseInt(req.params.id);
-    const post = posts.find(post => post.id === id);
+    const data = await pool.query('SELECT * FROM posts')
+    const post = data.rows.find(post => post.id === id);
     if (!post) {
         const error = new Error(`The post with id ${id} was not found`);
         error.status = 404;
