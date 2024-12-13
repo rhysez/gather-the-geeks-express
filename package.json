@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node app",
     "dev": "node --watch --env-file=.env app",
-    "db:create": "sequelize-cli db:create"
+    "db:create": "sequelize-cli db:create",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:g:migration": "sequelize-cli migration:generate --name",
+    "db:reset": "sequelize-cli db:drop && sequelize-cli db:create && sequelize-cli db:migrate"
   },
   "author": "",
   "license": "ISC",
