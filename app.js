@@ -7,6 +7,7 @@ import pool from "./database/db.js";
 // express initialisation with port.
 const app = express();
 const port = process.env.PORT || 8080;
+app.use(express.json())
 
 // route imports.
 app.use('/api/posts', posts);
@@ -27,7 +28,6 @@ app.get('/setup', async (req, res) => {
 })
 
 // middleware.
-app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(notFoundHandler);
 app.use(errorHandler);
