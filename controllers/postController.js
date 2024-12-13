@@ -1,4 +1,4 @@
-import pool from "../db.js";
+import pool from "../database/db.js";
 
 // @desc    Get many posts.
 export const getPosts = async (req, res) => {
@@ -28,23 +28,16 @@ export const getPost = (req, res, next) => {
 }
 // @desc    Create a post.
 export const createPost = async (req, res) => {
-    const newPost = {
-        title: "Some title",
-        content: "Some content",
-        author: "Jim Dobbins",
-        likes: 32,
-    }
-
-    if (!newPost.title || !newPost.content) {
+    if (!req.body.title || !req.body.content) {
         const error = new Error(`The post must contain a title and content.`);
         error.status = 400;
-        return next(error)
+        return res.status(400).json({msg: error.message})
     }
 
     try {
         await pool.query(
             'INSERT INTO posts (title, content, author, likes) VALUES ($1, $2, $3, $4)',
-            [newPost.title, newPost.content, newPost.author, newPost.likes]
+            [req.body.title, req.body.content, req.body.author, req.body.likes]
         )
         return res.status(201).json({msg: "Successfully created post"});
     } catch(err) {
@@ -52,6 +45,7 @@ export const createPost = async (req, res) => {
         return res.status(400).json({msg: err.message});
     }
 }
+
 // @desc    Update a post.
 export const updatePost = (req, res, next) => {
     const id = parseInt(req.params.id);
